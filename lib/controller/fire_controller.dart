@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'dart:developer';
- 
+
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -204,11 +204,12 @@ class FireController with ChangeNotifier {
 
   List<AddNewPost> listOfPost = [];
   Future fetchAllPost(bool listen) async {
-    final userData = await db
-        .collection("Post");
-       
-    QuerySnapshot<Map<String, dynamic>> snapshot =
-        await userData.get();
+    final userData = db.collection("Post");
+
+    QuerySnapshot<Map<String, dynamic>> snapshot = await userData.get();
+
+    log(snapshot.docs.length.toString());
+    log(snapshot.docs.map((e) => e.data().keys).toList().toString());
     listOfPost = snapshot.docs.map((e) {
       return AddNewPost.fromJson(e.data());
     }).toList();
@@ -224,7 +225,7 @@ class FireController with ChangeNotifier {
         .where("postOwnnerId",
             isEqualTo: FirebaseAuth.instance.currentUser!.uid)
         .get();
-        
+
     myReviews = snapshot.docs.map((e) {
       return CommentModel.fromJson(e.data());
     }).toList();
